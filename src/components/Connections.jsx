@@ -3,6 +3,7 @@ import { BASE_URL } from "../utils/constants";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
+import { Link } from "react-router-dom";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connections);
@@ -34,7 +35,7 @@ const Connections = () => {
         const { _id, firstName, lastName, photoUrl, age, gender, about } =
           connection;
 
-        return (
+        return ( 
           <div
             key={_id}
             className=" flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto"
@@ -53,6 +54,9 @@ const Connections = () => {
               {age && gender && <p>{age + ", " + gender}</p>}
               <p>{about}</p>
             </div>
+            <Link to={"/chat/" + _id}>
+              <button className="btn btn-primary">Chat</button>
+            </Link>
           </div>
         );
       })}
