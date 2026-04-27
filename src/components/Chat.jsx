@@ -38,7 +38,8 @@ const Chat = () => {
       return;
     }
     const socket = createSocketConnection();
-    // As soon as the page loaded, the socket connection is made and joinChat event is emitted
+    // window.socket = socket;
+
     socket.emit("joinChat", {
       firstName: user.firstName,
       userId,
