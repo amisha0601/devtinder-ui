@@ -6,14 +6,17 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
-
+import { setOnlineUsers } from "../utils/presenceSlice";
+import { createSocketConnection } from "../utils/socket";
+import { setSocket } from "../utils/chatSlice";
 
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userData = useSelector((store) => store.user);
 
-
+   const socket = useSelector((store) => store.chat?.socket);
+   
   const fetchUser = async () => {
     if(userData) return;
     try {
@@ -33,10 +36,34 @@ const Body = () => {
         fetchUser();
   }, []);
 
+   useEffect(() => {
+    if (userData?._id && !socket) {
+      const s = createSocketConnection();
+      dispatch(setSocket(s));
+    }
+  }, [userData, socket, dispatch]);
+
+   useEffect(() => {
+    if (userData?._id && socket) {
+      
+      socket.emit("userOnline", userData._id);
+
+      socket.on("updateOnlineUsers", (onlineIds) => {
+        dispatch(setOnlineUsers(onlineIds));
+      });
+
+      return () => {
+        socket.off("updateOnlineUsers");
+      };
+    }
+  }, [userData, socket, dispatch]);
+
   return (
     <div>
       <Navbar />
-      <Outlet />
+      <div className="min-h-screen"> 
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );
