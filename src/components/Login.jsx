@@ -23,7 +23,9 @@ const Login = () => {
         { emailId, password },
         { withCredentials: true }
       );
+
       dispatch(addUser(res.data));
+
       return navigate("/");
     } catch (err) {
       setError(err?.response?.data || "Something went wrong!!");
@@ -37,8 +39,10 @@ const Login = () => {
         { firstName, lastName, emailId, password },
         { withCredentials: true }
       );
+
       dispatch(addUser(res.data.data));
-      return navigate("/profile");
+
+      return navigate("/");
     } catch (err) {
       setError(err?.response?.data || "Something went wrong");
     }
@@ -63,7 +67,10 @@ const Login = () => {
                     type="text"
                     value={firstName}
                     className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      setError("");
+                    }}
                   />
                 </label>
 
@@ -75,20 +82,25 @@ const Login = () => {
                     type="text"
                     value={lastName}
                     className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      setError("");
+                    }}
                   />
                 </label>
               </>
             )}
 
-             
             <fieldset className="fieldset">
               <legend className="fieldset-legend">Email Id</legend>
               <input
                 type="text"
                 value={emailId}
                 className="input"
-                onChange={(e) => setEmailId(e.target.value)}
+                onChange={(e) => {
+                  setEmailId(e.target.value);
+                  setError("");
+                }}
               />
             </fieldset>
 
@@ -98,12 +110,15 @@ const Login = () => {
                 type="password"
                 value={password}
                 className="input"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
               />
             </fieldset>
           </div>
 
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-500 text-center">{error}</p>
 
           <div className="card-actions justify-center">
             <button
@@ -115,8 +130,11 @@ const Login = () => {
           </div>
 
           <p
-            className="m-auto cursor-pointer py-2"
-            onClick={() => setIsLoginForm((value) => !value)}
+            className="m-auto cursor-pointer py-2 text-sm text-blue-500"
+            onClick={() => {
+              setIsLoginForm((value) => !value);
+              setError("");
+            }}
           >
             {isLoginForm
               ? "New User? Signup Here"
