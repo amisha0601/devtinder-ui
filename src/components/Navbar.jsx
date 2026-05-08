@@ -4,18 +4,27 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { removeUser } from "../utils/userSlice";
+import { toast } from "../utils/notification";
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
+  const requests = useSelector((store) => store.requests);
+  const connections = useSelector((store) => store.connections);
+  const unreadCount = useSelector((store) => store.chat?.unreadCount || 0);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    const confirmed = window.confirm("Are you sure you want to logout?");
+    
+    if (!confirmed) return;
+
     try {
       await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
       dispatch(removeUser());
       return navigate("/login");
     } catch (err) {
+      toast.error("Logout failed. Please try again.");
       console.error("Logout failed:", err.message);
     }
   };
@@ -51,10 +60,23 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/connections">Connections</Link>
+                <Link to="/connections" className="justify-between">
+                  Connections
+                  {connections?.length > 0 && (
+                    <span className="badge badge-error">{connections.length}</span>
+                  )}
+                  {unreadCount > 0 && (
+                    <span className="badge badge-warning ml-2">{unreadCount}</span>
+                  )}
+                </Link>
               </li>
               <li>
-                <Link to="/requests">Requests</Link>
+                <Link to="/requests" className="justify-between">
+                  Requests
+                  {requests?.length > 0 && (
+                    <span className="badge badge-error">{requests.length}</span>
+                  )}
+                </Link>
               </li>
               <li>
                 <Link to="/premium">Premium</Link>

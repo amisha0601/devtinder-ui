@@ -1,32 +1,57 @@
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
 import { Link } from "react-router-dom";
+import { toast } from "../utils/notification";
 
 const Connections = () => {
   const connections = useSelector((store) => store.connections);
   const onlineUsers = useSelector((store) => store.presence); 
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const fetchConnections = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(BASE_URL + "/user/connections", {
         withCredentials: true,
       });
       dispatch(addConnections(res.data.data));
-    } catch (err) {
-      // Handle Error Case
+    } catch (error) {
+      toast.error("Failed to load connections");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchConnections();
-  }, []);
+  }, [dispatch]);
+
+  if (loading)
+    return (
+      <div className="text-center my-10">
+        <h1 className="text-white text-3xl mb-8">Connections</h1>
+        <div className="flex justify-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      </div>
+    );
 
   if (!connections) return null;
-  if (connections.length === 0) return <h1 className="text-center my-10 text-white text-2xl"> No Connections Found</h1>;
+  if (connections.length === 0)
+    return (
+      <div className="flex justify-center my-10">
+        <div className="card bg-base-300 w-96 shadow-lg">
+          <div className="card-body text-center">
+            <h1 className="text-2xl text-white mb-4">No Connections Yet 👥</h1>
+            <p className="text-gray-400">Connect with developers to start chatting!</p>
+          </div>
+        </div>
+      </div>
+    );
 
   return (
     <div className="text-center my-10">
@@ -54,7 +79,7 @@ const Connections = () => {
               )}
             </div>
 
-            <div className="text-left mx-4 flex-grow">
+            <div className="text-left mx-4 grow">
               <h2 className="font-bold text-xl">
                 {firstName + " " + lastName}
               </h2>

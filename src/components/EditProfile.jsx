@@ -5,6 +5,7 @@ import { BASE_URL, TECH_STACK } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import axios from "axios";
+import { toast } from "../utils/notification";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
@@ -13,12 +14,24 @@ const EditProfile = ({ user }) => {
   const [age, setAge] = useState(user.age || "");
   const [gender, setGender] = useState(user.gender || "");
   const [about, setAbout] = useState(user.about || "");
+  const [error, setError] = useState("");
   const dispatch = useDispatch();
-  const [showToast, setShowToast] = useState(false);
+  const [skills, setSkills] = useState(user.skills?.join(", ") || "");
+
   const saveProfile = async () => {
     setError("");
+
+    if (!firstName.trim() || !lastName.trim()) {
+      setError("First name and last name are required");
+      return;
+    }
+
+    if (age && isNaN(age)) {
+      setError("Age must be a number");
+      return;
+    }
+
     try {
-      // 1. Logic to turn the string "React, Node" into a clean Array ["React", "Node"]
       const skillsArray = skills
         .split(",")
         .map((s) => s.trim())
@@ -33,21 +46,16 @@ const EditProfile = ({ user }) => {
           age,
           gender,
           about,
-          skills: skillsArray, // 2. Send the cleaned array to the backend
+          skills: skillsArray,
         },
         { withCredentials: true },
       );
 
       dispatch(addUser(res?.data?.data));
-      setShowToast(true);
-
-      setTimeout(() => {
-        setShowToast(false);
-      }, 3000);
     } catch (err) {
-      // Helpful Tip: If your backend sends a string error, use this.
-      // If it's an object, you might need err.response.data.message
-      setError(err.response?.data || "Something went wrong");
+      const errorMsg = err.response?.data?.message || err.response?.data || "Failed to update profile";
+      toast.error(errorMsg);
+      setError(errorMsg);
     }
   };
 
@@ -57,28 +65,27 @@ const EditProfile = ({ user }) => {
     const fullValue = e.target.value;
     setSkills(fullValue);
 
-    // 2. Logic: Find what the user is typing right now (after the last comma)
     const parts = fullValue.split(",");
     const lastPart = parts[parts.length - 1].trim();
 
     setActiveWord(lastPart);
   };
 
-  const [error, setError] = useState("");
-  const [skills, setSkills] = useState(user.skills?.join(", ") || "");
-
   const handleVerify = async () => {
+    const confirmed = window.confirm("Verify as a developer? This will add a verification badge to your profile.");
+    if (!confirmed) return;
+
     try {
       const res = await axios.patch(
         BASE_URL + "/profile/verify",
         {},
         { withCredentials: true },
       );
-      // Update the Redux store with new user data
       dispatch(addUser(res?.data?.data));
-      setShowToast(true); // Show success message
     } catch (err) {
-      setError(err.response?.data || "Verification failed");
+      const errorMsg = err.response?.data?.message || err.response?.data || "Verification failed";
+      toast.error(errorMsg);
+      setError(errorMsg);
     }
   };
 
@@ -141,13 +148,12 @@ const EditProfile = ({ user }) => {
                       Skills (Separate with commas)
                     </legend>
 
-                    {/* 1. THE SUGGESTION BAR - Shows when user starts typing a new skill */}
                     <div className="flex flex-wrap gap-2 mb-2 min-h-8">
                       {activeWord.length > 1 &&
                         TECH_STACK.filter((t) =>
                           t.toLowerCase().includes(activeWord.toLowerCase()),
                         )
-                          .slice(0, 5) // Show top 5 matches
+                          .slice(0, 5) 
                           .map((suggestion) => (
                             <button
                               key={suggestion}
@@ -155,10 +161,9 @@ const EditProfile = ({ user }) => {
                               className="badge badge-secondary badge-outline cursor-pointer hover:bg-secondary hover:text-white transition-all"
                               onClick={() => {
                                 const parts = skills.split(",");
-                                // Replace the last part with the clicked suggestion
                                 parts[parts.length - 1] = " " + suggestion;
-                                setSkills(parts.join(",") + ", "); // Add a comma for the next one
-                                setActiveWord(""); // Clear suggestions
+                                setSkills(parts.join(",") + ", "); 
+                                setActiveWord(""); 
                               }}
                             >
                               + {suggestion}
@@ -166,7 +171,7 @@ const EditProfile = ({ user }) => {
                           ))}
                     </div>
 
-                    {/* 2. THE INPUT FIELD */}
+                   
                     <input
                       type="text"
                       value={skills}
@@ -187,12 +192,15 @@ const EditProfile = ({ user }) => {
                 </div>
                 <p className="text-red-500">{error}</p>
                 <div className="card-actions justify-center">
-                  <button className="btn btn-primary" onClick={saveProfile}>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={saveProfile}
+                  >
                     Save Profile
                   </button>
                   {!user.isVerifiedDev && (
                     <button
-                      className="btn btn-outline btn-secondary mt-4"
+                      className="btn btn-outline btn-secondary"
                       onClick={handleVerify}
                     >
                       Verify as Developer
@@ -211,18 +219,11 @@ const EditProfile = ({ user }) => {
             age,
             gender,
             about,
-            skills, // Added this: now the preview sees your skills as you type!
-            isVerifiedDev: user.isVerifiedDev, // Added this: now the preview sees the badge status!
+            skills,
+            isVerifiedDev: user.isVerifiedDev,
           }}
         />
       </div>
-      {showToast && (
-        <div className="toast toast-top toast-center">
-          <div className="alert alert-success">
-            <span>Profile saved successfully.</span>
-          </div>
-        </div>
-      )}
     </>
   );
 };

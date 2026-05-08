@@ -16,7 +16,22 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = async () => {
+    if (!emailId || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    if (!validateEmail(emailId)) {
+      setError("Please enter a valid email");
+      return;
+    }
+
     try {
       const res = await axios.post(
         BASE_URL + "/login",
@@ -25,14 +40,29 @@ const Login = () => {
       );
 
       dispatch(addUser(res.data));
-
       return navigate("/");
     } catch (err) {
-      setError(err?.response?.data || "Something went wrong!!");
+      const errorMsg = err?.response?.data?.message || err?.response?.data || "Login failed. Please try again.";
+      setError(errorMsg);
     }
   };
 
   const handleSignUp = async () => {
+    if (!firstName || !lastName || !emailId || !password) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    if (!validateEmail(emailId)) {
+      setError("Please enter a valid email");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
     try {
       const res = await axios.post(
         BASE_URL + "/signup",
@@ -41,10 +71,10 @@ const Login = () => {
       );
 
       dispatch(addUser(res.data.data));
-
       return navigate("/");
     } catch (err) {
-      setError(err?.response?.data || "Something went wrong");
+      const errorMsg = err?.response?.data?.message || err?.response?.data || "Signup failed. Please try again.";
+      setError(errorMsg);
     }
   };
 
