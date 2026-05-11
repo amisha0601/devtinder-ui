@@ -100,22 +100,24 @@ const Chat = () => {
   };
 
   return (
-    <div className="w-3/4 mx-auto border border-gray-600 m-5 h-[70vh] flex flex-col rounded-lg bg-base-300">
-      <div className="p-5 border-b border-gray-600 flex items-center gap-3">
+    <div className="w-full max-w-4xl mx-auto border border-base-content/20 my-5 h-[70vh] flex flex-col rounded-lg bg-base-300 text-base-content">
+
+      <div className="p-5 border-b border-base-content/20 flex items-center gap-3">
         <h1 className="font-bold text-xl">Chat</h1>
         <div className="flex items-center gap-2">
-          <div className={`h-3 w-3 rounded-full ${isOnline ? "bg-green-500 animate-pulse" : "bg-gray-500"}`}></div>
-          <span className="text-xs text-gray-400">{isOnline ? "Online" : "Offline"}</span>
+          <div className={`h-3 w-3 rounded-full ${isOnline ? "bg-green-500 animate-pulse" : "bg-neutral-500"}`}></div>
+          <span className="text-xs text-base-content/70">{isOnline ? "Online" : "Offline"}</span>
         </div>
       </div>
       
+
       <div className="flex-1 overflow-y-auto p-5 space-y-4">
         {loading ? (
           <div className="flex justify-center items-center h-full">
             <span className="loading loading-spinner loading-md"></span>
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex justify-center items-center h-full text-gray-400">
+          <div className="flex justify-center items-center h-full text-base-content/60">
             <p>No messages yet. Say hello! 👋</p>
           </div>
         ) : (
@@ -123,8 +125,8 @@ const Chat = () => {
             const isMe = user.firstName === msg.firstName;
             return (
               <div key={index} className={`chat ${isMe ? "chat-end" : "chat-start"}`}>
-                <div className="chat-header">{`${msg.firstName} ${msg.lastName}`}</div>
-                <div className={`chat-bubble ${isMe ? "chat-bubble-primary" : "chat-bubble-secondary"}`}>
+                <div className="chat-header text-base-content/70 mb-1">{`${msg.firstName} ${msg.lastName}`}</div>
+                <div className={`chat-bubble shadow ${isMe ? "chat-bubble-primary text-primary-content" : "chat-bubble-secondary text-secondary-content"}`}>
                   {msg.text}
                 </div>
               </div>
@@ -134,17 +136,17 @@ const Chat = () => {
         <div ref={scrollRef} />
       </div>
 
-      <div className="p-5 border-t border-gray-600 flex items-center gap-2 bg-base-200">
+      <div className="p-5 border-t border-base-content/20 flex items-center gap-2 bg-base-200">
         <input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           placeholder="Type your message..."
-          className="flex-1 border border-gray-500 bg-transparent text-white rounded-full px-4 py-2 focus:outline-none focus:border-primary"
+          className="flex-1 border border-base-content/30 bg-base-100 text-base-content rounded-full px-4 py-2 focus:outline-none focus:border-primary"
         />
         <button 
           onClick={sendMessage} 
-          className="btn btn-primary rounded-full px-6"
+          className="btn btn-primary rounded-full px-6 text-primary-content"
         >
           Send
         </button>

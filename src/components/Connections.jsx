@@ -32,10 +32,10 @@ const Connections = () => {
 
   if (loading)
     return (
-      <div className="text-center my-10">
-        <h1 className="text-white text-3xl mb-8">Connections</h1>
+      <div className="text-center my-10 text-base-content">
+        <h1 className="text-3xl mb-8 font-bold">Connections</h1>
         <div className="flex justify-center">
-          <span className="loading loading-spinner loading-lg"></span>
+          <span className="loading loading-spinner loading-lg text-primary"></span>
         </div>
       </div>
     );
@@ -43,56 +43,58 @@ const Connections = () => {
   if (!connections) return null;
   if (connections.length === 0)
     return (
-      <div className="flex justify-center my-10">
-        <div className="card bg-base-300 w-96 shadow-lg">
+      <div className="flex justify-center my-10 px-4">
+        <div className="card bg-base-300 w-full max-w-sm shadow-lg border border-base-content/10 text-base-content">
           <div className="card-body text-center">
-            <h1 className="text-2xl text-white mb-4">No Connections Yet 👥</h1>
-            <p className="text-gray-400">Connect with developers to start chatting!</p>
+            <h1 className="text-2xl mb-4 font-bold">No Connections Yet 👥</h1>
+            <p className="text-base-content/70">Connect with developers to start chatting!</p>
           </div>
         </div>
       </div>
     );
 
   return (
-    <div className="text-center my-10">
-      <h1 className="text-bold text-white text-3xl mb-8">Connections</h1>
+    <div className="text-center my-10 px-4 text-base-content">
+      <h1 className="font-bold text-3xl mb-8">Connections</h1>
 
-      {connections.map((connection) => {
-        const user = connection.user || connection;
-        const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
+      <div className="space-y-4">
+        {connections.map((connection) => {
+          const user = connection.user || connection;
+          const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
 
-        const isOnline = onlineUsers.some(id => String(id) === String(_id));
+          const isOnline = onlineUsers.some(id => String(id) === String(_id));
 
-        return ( 
-          <div
-            key={_id}
-            className="flex m-4 p-4 rounded-lg bg-base-300 w-1/2 mx-auto items-center"
-          >
-            <div className="relative">
-              <img
-                alt="photo"
-                className="w-20 h-20 rounded-full object-cover"
-                src={photoUrl}
-              />
-              {isOnline && (
-                <div className="absolute bottom-1 right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-base-300 animate-pulse"></div>
-              )}
+          return ( 
+            <div
+              key={_id}
+              className="flex flex-col sm:flex-row p-4 rounded-lg bg-base-300 w-full max-w-2xl mx-auto items-center gap-4 shadow-md border border-base-content/5"
+            >
+              <div className="relative shrink-0">
+                <img
+                  alt="photo"
+                  className="w-20 h-20 rounded-full object-cover border border-base-content/10"
+                  src={photoUrl}
+                />
+                {isOnline && (
+                  <div className="absolute bottom-1 right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-base-300 animate-pulse"></div>
+                )}
+              </div>
+
+              <div className="text-center sm:text-left mx-2 grow">
+                <h2 className="font-bold text-xl text-base-content">
+                  {firstName + " " + lastName}
+                </h2>
+                {age && gender && <p className="text-base-content/70 text-sm font-medium">{age + ", " + gender}</p>}
+                <p className="text-sm text-base-content/80 mt-1">{about}</p>
+              </div>
+
+              <Link to={"/chat/" + _id} className="w-full sm:w-auto">
+                <button className="btn btn-primary px-6 w-full sm:w-auto text-primary-content">Chat</button>
+              </Link>
             </div>
-
-            <div className="text-left mx-4 grow">
-              <h2 className="font-bold text-xl">
-                {firstName + " " + lastName}
-              </h2>
-              {age && gender && <p className="text-gray-400">{age + ", " + gender}</p>}
-              <p className="text-sm text-gray-300">{about}</p>
-            </div>
-
-            <Link to={"/chat/" + _id}>
-              <button className="btn btn-primary px-6">Chat</button>
-            </Link>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

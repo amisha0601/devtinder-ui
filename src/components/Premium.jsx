@@ -7,6 +7,7 @@ import { toast } from "../utils/notification";
 const Premium = () => {
   const [isUserPremium, setIsUserPremium] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [buyingType, setBuyingType] = useState(null);
 
   useEffect(() => {
     verifyPremiumUser();
@@ -31,6 +32,7 @@ const Premium = () => {
   };
 
   const handleBuyClick = async (type) => {
+    setBuyingType(type);
     try {
       const order = await axios.post(
         BASE_URL + "/payment/create",
@@ -65,23 +67,25 @@ const Premium = () => {
     } catch (err) {
       toast.error("Failed to initiate payment");
       console.error(err);
+    } finally {
+      setBuyingType(null);
     }
   };
 
   if (loading)
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="flex justify-center items-center min-h-screen bg-base-100">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
       </div>
     );
 
   return isUserPremium ? (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="card bg-base-300 w-96 shadow-xl">
+    <div className="flex justify-center items-center min-h-[80vh] px-4 text-base-content">
+      <div className="card bg-base-300 w-96 shadow-xl border border-base-content/5">
         <div className="card-body text-center">
-          <h1 className="text-3xl text-white mb-4">🎉 Premium User</h1>
-          <p className="text-gray-400 mb-4">You're already enjoying premium benefits!</p>
-          <ul className="text-left text-gray-300 space-y-2">
+          <h1 className="text-3xl font-extrabold mb-4">🎉 Premium User</h1>
+          <p className="text-base-content/70 mb-4 font-medium">You're already enjoying premium benefits!</p>
+          <ul className="text-left text-base-content/80 space-y-2.5 max-w-xs mx-auto">
             <li>✅ Unlimited chat messages</li>
             <li>✅ Unlimited connection requests</li>
             <li>✅ Verified badge</li>
@@ -91,18 +95,18 @@ const Premium = () => {
       </div>
     </div>
   ) : (
-    <div className="m-10">
+    <div className="m-10 text-base-content">
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-white mb-4">Upgrade to Premium ✨</h1>
-        <p className="text-gray-400">Unlock unlimited possibilities and connect with more developers</p>
+        <h1 className="text-4xl font-extrabold mb-4">Upgrade to Premium ✨</h1>
+        <p className="text-base-content/70 font-medium">Unlock unlimited possibilities and connect with more developers</p>
       </div>
       
-      <div className="flex w-full gap-8 max-w-6xl mx-auto">
-        <div className="card bg-base-300 rounded-box flex-1 h-auto">
+      <div className="flex flex-col md:flex-row w-full gap-8 max-w-5xl mx-auto items-stretch">
+        <div className="card bg-base-300 rounded-box flex-1 shadow-md border border-base-content/5">
           <div className="card-body">
-            <h1 className="font-bold text-2xl text-white">🥈 Silver Membership</h1>
-            <p className="text-3xl font-bold text-secondary my-4">₹99</p>
-            <ul className="space-y-2 text-gray-300 grow">
+            <h1 className="font-bold text-2xl">🥈 Silver Membership</h1>
+            <p className="text-4xl font-extrabold text-secondary my-4">₹99</p>
+            <ul className="space-y-2.5 text-base-content/80 grow">
               <li>✓ Chat with other developers</li>
               <li>✓ 100 connection requests/day</li>
               <li>✓ Blue verification tick</li>
@@ -110,21 +114,22 @@ const Premium = () => {
             </ul>
             <button
               onClick={() => handleBuyClick("silver")}
-              className="btn btn-secondary w-full mt-4"
+              disabled={buyingType === "silver"}
+              className="btn btn-secondary text-secondary-content w-full mt-6 font-bold"
             >
-              Buy Silver
+              {buyingType === "silver" ? "Processing..." : "Buy Silver"}
             </button>
           </div>
         </div>
         
-        <div className="divider divider-horizontal">OR</div>
+        <div className="divider md:divider-horizontal">OR</div>
         
-        <div className="card bg-base-300 rounded-box flex-1 h-auto border-2 border-primary">
+        <div className="card bg-base-300 rounded-box flex-1 shadow-xl border-2 border-primary">
           <div className="card-body">
-            <div className="badge badge-primary mb-2 w-fit">Most Popular</div>
-            <h1 className="font-bold text-2xl text-white">🥇 Gold Membership</h1>
-            <p className="text-3xl font-bold text-primary my-4">₹199</p>
-            <ul className="space-y-2 text-gray-300 grow">
+            <div className="badge badge-primary font-bold mb-2 w-fit">Most Popular</div>
+            <h1 className="font-bold text-2xl">🥇 Gold Membership</h1>
+            <p className="text-4xl font-extrabold text-primary my-4">₹199</p>
+            <ul className="space-y-2.5 text-base-content/80 grow">
               <li>✓ Chat with other developers</li>
               <li>✓ Unlimited connection requests</li>
               <li>✓ Gold verification badge</li>
@@ -133,7 +138,7 @@ const Premium = () => {
             <button
               onClick={() => handleBuyClick("gold")}
               disabled={buyingType === "gold"}
-              className="btn btn-primary w-full mt-4"
+              className="btn btn-primary text-primary-content w-full mt-6 font-bold"
             >
               {buyingType === "gold" ? "Processing..." : "Buy Gold"}
             </button>

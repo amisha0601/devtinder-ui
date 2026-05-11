@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -79,24 +80,24 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center my-10">
+    <div className="flex justify-center my-10 text-base-content">
       <div className="card bg-base-300 w-96 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title justify-center">
+          <h2 className="card-title justify-center text-base-content font-bold text-2xl">
             {isLoginForm ? "Login" : "Sign Up"}
-          </h2>
+          </h2> 
 
           <div>
             {!isLoginForm && (
               <>
                 <label className="form-control w-full max-w-xs my-2">
                   <div className="label">
-                    <span className="label-text">First Name</span>
+                    <span className="label-text text-base-content/80 font-medium">First Name</span>
                   </div>
                   <input
                     type="text"
                     value={firstName}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-xs text-base-content bg-base-100"
                     onChange={(e) => {
                       setFirstName(e.target.value);
                       setError("");
@@ -106,12 +107,12 @@ const Login = () => {
 
                 <label className="form-control w-full max-w-xs my-2">
                   <div className="label">
-                    <span className="label-text">Last Name</span>
+                    <span className="label-text text-base-content/80 font-medium">Last Name</span>
                   </div>
                   <input
                     type="text"
                     value={lastName}
-                    className="input input-bordered w-full max-w-xs"
+                    className="input input-bordered w-full max-w-xs text-base-content bg-base-100"
                     onChange={(e) => {
                       setLastName(e.target.value);
                       setError("");
@@ -122,11 +123,11 @@ const Login = () => {
             )}
 
             <fieldset className="fieldset">
-              <legend className="fieldset-legend">Email Id</legend>
+              <legend className="fieldset-legend text-base-content/80 font-medium">Email Id</legend>
               <input
                 type="text"
                 value={emailId}
-                className="input"
+                className="input text-base-content bg-base-100"
                 onChange={(e) => {
                   setEmailId(e.target.value);
                   setError("");
@@ -135,11 +136,11 @@ const Login = () => {
             </fieldset>
 
             <fieldset className="fieldset">
-              <legend className="fieldset-legend">Password</legend>
+              <legend className="fieldset-legend text-base-content/80 font-medium">Password</legend>
               <input
                 type="password"
                 value={password}
-                className="input"
+                className="input text-base-content bg-base-100"
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setError("");
@@ -148,11 +149,11 @@ const Login = () => {
             </fieldset>
           </div>
 
-          <p className="text-red-500 text-center">{error}</p>
+          <p className="text-error text-center mt-2 min-h-[24px] font-medium">{error}</p>
 
           <div className="card-actions justify-center">
             <button
-              className="btn btn-primary"
+              className="btn btn-primary text-primary-content font-semibold px-8"
               onClick={isLoginForm ? handleLogin : handleSignUp}
             >
               {isLoginForm ? "Login" : "Sign Up"}
@@ -160,7 +161,7 @@ const Login = () => {
           </div>
 
           <p
-            className="m-auto cursor-pointer py-2 text-sm text-blue-500"
+            className="m-auto cursor-pointer py-2 text-sm text-info hover:underline transition-all"
             onClick={() => {
               setIsLoginForm((value) => !value);
               setError("");

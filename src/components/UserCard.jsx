@@ -54,7 +54,7 @@ const UserCard = ({ user }) => {
   };
 
   return (
-    <div className="card bg-base-300 w-96 shadow-sm border border-gray-700">
+    <div className="card bg-base-300 w-96 shadow-sm border border-base-content/10 text-base-content">
       <figure className="relative">
         <img
           src={photoUrl}
@@ -68,26 +68,26 @@ const UserCard = ({ user }) => {
       </figure>
 
       <div className="card-body">
-        <h2 className="card-title">
+        <h2 className="card-title text-base-content font-bold">
           {firstName + " " + lastName}
           {isVerifiedDev && (
             <div className="badge badge-secondary gap-2 ml-2 py-3 px-2">
-              <span className="text-xs font-bold">Verified Dev</span>
+              <span className="text-xs font-bold text-secondary-content">Verified Dev</span>
             </div>
           )}
         </h2>
 
         {age && gender && (
-          <p className="text-gray-400">{age + ", " + gender}</p>
+          <p className="text-base-content/70 text-sm font-medium">{age + ", " + gender}</p>
         )}
-        <p className="line-clamp-3">{about}</p>
+        <p className="line-clamp-3 text-base-content/80">{about}</p>
 
         <div className="flex flex-wrap gap-2 my-2">
           {skillsArray &&
             skillsArray.map((skill, index) => (
               <div
                 key={index}
-                className="badge badge-outline badge-sm uppercase font-mono text-xs"
+                className="badge badge-outline badge-sm uppercase font-mono text-xs border-base-content/20 text-base-content/80"
               >
                 {skill}
               </div>
@@ -103,7 +103,7 @@ const UserCard = ({ user }) => {
               Ignore
             </button>
             <button
-              className="btn btn-secondary px-8"
+              className="btn btn-secondary text-secondary-content px-8"
               onClick={() => handleSendRequest("interested", _id)}
             >
               Interested

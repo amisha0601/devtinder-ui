@@ -1,3 +1,4 @@
+import React from "react";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,10 +40,10 @@ const Feed = () => {
       <div className="flex justify-center my-10">
         <div className="card bg-base-300 w-96 shadow-xl animate-pulse">
           <div className="card-body">
-            <div className="h-64 bg-gray-600 rounded mb-4"></div>
-            <div className="h-6 bg-gray-600 rounded mb-2"></div>
-            <div className="h-4 bg-gray-600 rounded mb-4"></div>
-            <div className="h-10 bg-gray-600 rounded"></div>
+            <div className="h-64 bg-base-content/20 rounded mb-4"></div>
+            <div className="h-6 bg-base-content/20 rounded mb-2"></div>
+            <div className="h-4 bg-base-content/20 rounded mb-4"></div>
+            <div className="h-10 bg-base-content/20 rounded"></div>
           </div>
         </div>
       </div>
@@ -52,16 +53,14 @@ const Feed = () => {
 
   if (feed.length === 0)
     return (
-      <h1 className="flex justify-center my-10 text-white text-2xl">
+      <h1 className="flex justify-center my-10 text-base-content text-2xl font-semibold">
          No new users found!
       </h1>
     );
 
   return (
-    <div className="flex flex-col items-center my-10 gap-6">
-      {feed.map((user) => (
-        <UserCard key={user._id} user={user} />
-      ))}
+    <div className="flex justify-center items-center my-10 px-4">
+      <UserCard user={feed[0]} />
     </div>
   );
 };
